@@ -2,10 +2,10 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 
 from core import Config
 from repositories.bet_repository import BetRepository
-from repositories.user_bets_repository import UserGuessesRepository
+from repositories.user_guesses_repository import UserGuessesRepository
 from repositories.user_repository import UserRepository
 from services.bet_service import BetService
-from services.user_bets_service import UserGuessesService
+from services.user_guesses_service import UserGuessesService
 
 from services.user_service import UserService
 

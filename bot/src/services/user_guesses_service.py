@@ -52,3 +52,5 @@ class UserGuessesService(UserGuessesServiceProtocol):
         """Получение статистики пользователя"""
         async with self.SessionLocal() as session:
             repo = self.user_guesses_repo_factory(session)
+            stat = await repo.get_user_statistic(telegram_id)
+            return stat

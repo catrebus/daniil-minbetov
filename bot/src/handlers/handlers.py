@@ -97,4 +97,12 @@ async def print_bets(message: Message):
 
 @tg_router.message(F.text == "👤 Профиль")
 async def print_bets(message: Message):
+    """Отпечатать пользователю его профиль"""
+    user_guesses_service = container.user_guesses_service()
+    stat = await user_guesses_service.get_user_statistic(message.from_user.id)
+    user = await message.bot.get_chat(message.from_user.id)
+
     text = "👤ВАШ ЛИЧНЫЙ ПРОФИЛЬ\n"
+    text += f"- - -    @{user.username}    - - -\n"
+    text += f"Количество правильных ставок: {stat}"
+    await message.answer(text)

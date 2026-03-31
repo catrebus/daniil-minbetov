@@ -79,16 +79,13 @@ class UserGuessesRepository(UserGuessesRepositoryProtocol):
     async def get_user_statistic(self, telegram_id: int):
         """Получение статистики пользователя (Количество правильных ставок, ...)"""
         stmt = select(
-            UserGuesses.telegram_id,
             func.count(UserGuesses.id)
         ).join(
             Bets, UserGuesses.bet_id == Bets.id
         ).where(
             UserGuesses.guess == Bets.result,
             UserGuesses.telegram_id == telegram_id
-        ).group_by(
-            UserGuesses.telegram_id
         )
 
         result = await self.session.execute(stmt)
-        return result.mappings().one_or_none()
+        return result.scalar() or 0
