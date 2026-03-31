@@ -1,17 +1,17 @@
 services:
-  bot:
-    container_name: bot
+  daniil-minbetov-bot:
+    container_name: daniil-minbetov-bot
 
     build:
       context: ./bot/src
 
-    image: bot
+    image: daniil-minbetov-bot
 
     env_file:
       - .env
 
     depends_on:
-      danil-minbetov-db:
+      daniil-minbetov-db:
         condition: service_healthy
 
     environment:
@@ -23,24 +23,31 @@ services:
       BOT_DB_PORT: ${BOT_DB_PORT}
       BOT_DB_NAME: ${BOT_DB_NAME}
 
-  danil-minbetov-db:
+  daniil-minbetov-db:
+    container_name: daniil-minbetov-db
     image: mysql:8.0
+
     restart: always
+
     env_file:
       - .env
+
     environment:
       MYSQL_ROOT_PASSWORD: ${BOT_DB_PASSWORD}
       MYSQL_DATABASE: ${BOT_DB_NAME}
+
     volumes:
-      - danil-minbetov-db:/var/lib/mysql
-      - ./mysql/init/danil-minbetov-db:/docker-entrypoint-initdb.d/
+      - daniil-minbetov-db:/var/lib/mysql
+      - ./mysql/init/daniil-minbetov-db:/docker-entrypoint-initdb.d/
+
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      test: [ "CMD", "mysql", "-u", "root", "-p${BOT_DB_PASSWORD}", "-e", "SELECT 1" ]
       interval: 5s
       timeout: 3s
       retries: 10
+
     ports:
       - "3310:3306"
 
 volumes:
-  danil-minbetov-db:
+  daniil-minbetov-db:

@@ -2,10 +2,10 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 
 from core import Config
 from repositories.bet_repository import BetRepository
-from repositories.user_bets_repository import UserBetsRepository
+from repositories.user_bets_repository import UserGuessesRepository
 from repositories.user_repository import UserRepository
 from services.bet_service import BetService
-from services.user_bets_service import UserBetsService
+from services.user_bets_service import UserGuessesService
 
 from services.user_service import UserService
 
@@ -28,8 +28,8 @@ class Container:
     def bet_repository(self, session: AsyncSession) -> BetRepository:
         return BetRepository(session)
 
-    def user_bets_repository(self, session: AsyncSession) -> UserBetsRepository:
-        return UserBetsRepository(session)
+    def user_guesses_repository(self, session: AsyncSession) -> UserGuessesRepository:
+        return UserGuessesRepository(session)
 
     def user_service(self) -> UserService:
         return UserService(self.SessionLocal, self.user_repository)
@@ -37,8 +37,8 @@ class Container:
     def bet_service(self) -> BetService:
         return BetService(self.SessionLocal, self.bet_repository)
 
-    def user_bets_service(self) -> UserBetsService:
-        return UserBetsService(self.SessionLocal, self.user_bets_repository)
+    def user_guesses_service(self) -> UserGuessesService:
+        return UserGuessesService(self.SessionLocal, self.user_guesses_repository)
 
 
 container = Container()

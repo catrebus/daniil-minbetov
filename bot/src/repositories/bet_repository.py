@@ -31,4 +31,4 @@ class BetRepository(BetRepositoryProtocol):
         )
         last_bet_id = id_result.scalar()
 
-        await self.session.execute(update(Bets).where(Bets.id == last_bet_id).values(result=result))
+        await self.session.execute(update(Bets).where(Bets.id == last_bet_id).values(result=result, closed_at=datetime.datetime.now(ZoneInfo("Europe/Moscow"))))

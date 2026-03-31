@@ -21,7 +21,7 @@ async def cmdYes(message: Message):
     bet_service = container.bet_service()
     await bet_service.set_last_bet_result(True)
 
-    users_bet_service = container.user_bets_service()
+    users_bet_service = container.user_guesses_service()
     winners, losers = await users_bet_service.get_last_bet_result()
 
     text = "Подведем итоги\nСегодня победителями оказались эти люди:\n"
@@ -48,7 +48,7 @@ async def cmdNo(message: Message):
     bet_service = container.bet_service()
     await bet_service.set_last_bet_result(False)
 
-    users_bet_service = container.user_bets_service()
+    users_bet_service = container.user_guesses_service()
     winners, losers = await users_bet_service.get_last_bet_result()
 
     text = "Подведем итоги\nСегодня победителями оказались эти люди:\n"
@@ -68,19 +68,19 @@ async def cmdNo(message: Message):
 
 @tg_router.message(F.text == "Сделать ставку за")
 async def BetYes(message: Message):
-    repo = container.user_bets_service()
+    repo = container.user_guesses_service()
     await repo.do_bet(telegram_id=message.from_user.id, bet_value=1)
     await message.answer("Вы сделали ставку за")
 
 @tg_router.message(F.text == "Сделать ставку против")
 async def BetNo(message: Message):
-    repo = container.user_bets_service()
+    repo = container.user_guesses_service()
     await repo.do_bet(telegram_id=message.from_user.id, bet_value=0)
     await message.answer("Вы сделали ставку против")
 
 @tg_router.message(F.text == "Вывести ставки")
 async def print_bets(message: Message):
-    service = container.user_bets_service()
+    service = container.user_guesses_service()
     bets = await service.get_bets_by_last_bet()
 
     text = "СТАВКИ\nПроголосовавшие за:\n"
@@ -95,3 +95,6 @@ async def print_bets(message: Message):
             text += f"@{user.username}\n"
     await message.bot.send_message(chat_id=message.from_user.id, text=text)
 
+@tg_router.message(F.text == "👤 Профиль")
+async def print_bets(message: Message):
+    text = "👤ВАШ ЛИЧНЫЙ ПРОФИЛЬ\n"
