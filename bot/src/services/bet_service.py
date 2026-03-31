@@ -6,6 +6,9 @@ class BetServiceProtocol(ABC):
     @abstractmethod
     async def set_last_bet_result(self, result: bool): ...
 
+    @abstractmethod
+    async def is_bet_closed_today(self): ...
+
 class BetService(BetServiceProtocol):
 
     def __init__(self, SessionLocal, bet_repo_factory):
@@ -17,3 +20,8 @@ class BetService(BetServiceProtocol):
             repo = self.bet_repo_factory(session)
             await repo.set_last_bet_result(result)
             await session.commit()
+
+    async def is_bet_closed_today(self):
+        async with self.SessionLocal() as session:
+            repo = self.bet_repo_factory(session)
+            return await repo.is_bet_closed_today()

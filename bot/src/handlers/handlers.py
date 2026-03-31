@@ -66,22 +66,43 @@ async def cmdNo(message: Message):
     for loser in losers:
         await message.bot.send_message(chat_id=loser, text=text)
 
-@tg_router.message(F.text == "Сделать ставку за")
+@tg_router.message(F.text == "✅ Сделать ставку за")
 async def BetYes(message: Message):
+
+    bet_service = container.bet_service()
+    is_closed = await bet_service.is_bet_closed_today()
+    if is_closed:
+        await message.answer("Ставки на сегодня уже закрыты или не принимаются")
+        return
+
     repo = container.user_guesses_service()
     await repo.do_bet(telegram_id=message.from_user.id, bet_value=1)
     await message.answer("Вы сделали ставку за")
 
-@tg_router.message(F.text == "Сделать ставку против")
+@tg_router.message(F.text == "❌ Сделать ставку против")
 async def BetNo(message: Message):
+
+    bet_service = container.bet_service()
+    is_closed = await bet_service.is_bet_closed_today()
+    if is_closed:
+        await message.answer("Ставки на сегодня уже закрыты или не принимаются")
+        return
+
     repo = container.user_guesses_service()
     await repo.do_bet(telegram_id=message.from_user.id, bet_value=0)
     await message.answer("Вы сделали ставку против")
 
-@tg_router.message(F.text == "Вывести ставки")
+@tg_router.message(F.text == "📊 Вывести ставки")
 async def print_bets(message: Message):
-    service = container.user_guesses_service()
-    bets = await service.get_bets_by_last_bet()
+
+    bet_service = container.bet_service()
+    is_closed = await bet_service.is_bet_closed_today()
+    if is_closed:
+        await message.answer("Ставки на сегодня уже закрыты или не принимаются")
+        return
+
+    user_guesses_service = container.user_guesses_service()
+    bets = await user_guesses_service.get_bets_by_last_bet()
 
     text = "СТАВКИ\nПроголосовавшие за:\n"
     for bet in bets:
